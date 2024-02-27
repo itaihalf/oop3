@@ -62,9 +62,7 @@ public class User {
         this.resolution = resolution;
     }
 
-    public SubImgCharMatcher getSubImgCharMatcher() {
-        return subImgCharMatcher;
-    }
+
 
 
 }

@@ -39,8 +39,24 @@ public class Shell {
         }
     }
 
+
+    private static char[] charsFromRange(char start, char end){
+        char [] res = new char[end - start + 1];
+        for (int i = 0; i < res.length; i++) {
+            res[i] = (char) (start + i);
+        }
+        return res;
+    }
     private void add(String arg){
-        user.getSubImgCharMatcher().addChar();
+        if (arg.length() == 1){
+            user.addCharToDB(arg.charAt(0));
+        }
+        else if (arg.equals("all")){
+            user.addCharsToDB(charsFromRange(' ', '~'));
+        }
+        else{
+            System.out.println("Invalid input");
+        }
     }
 
 
