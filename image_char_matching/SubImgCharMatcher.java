@@ -1,15 +1,12 @@
 package image_char_matching;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 
 public class SubImgCharMatcher {
 
 
-    private final Map<Character,Double> brightnessMap = new HashMap<>();
-    private final SortedMap<Double,Character> brightnessSortedMap = new TreeMap<>();
+    private final Map<Character,Double> brightnessMap = new HashMap<Character,Double>();
+    private final SortedMap<Double,Character> brightnessSortedMap = new TreeMap<Double,Character>();
     // todo: check if character are also sorted in tree.
 
     private static double getBrightness(boolean[][] img){
@@ -49,9 +46,14 @@ public class SubImgCharMatcher {
         brightnessMap.put(c, brightness);
         brightnessSortedMap.put(brightness, c);
     }
+
     public void removeChar(char c){
         brightnessSortedMap.remove(brightnessMap.get(c));
         brightnessMap.remove(c);
+    }
+
+    public ArrayList<Character> getChars(){
+        return new ArrayList<>(brightnessMap.keySet());
     }
 
 

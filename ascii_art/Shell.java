@@ -7,11 +7,8 @@ public class Shell {
 
 
     private final User user;
-    private final AsciiArtAlgorithm asciiArtAlgorithm;
-
     public Shell() throws IOException {
         user = new User();
-        asciiArtAlgorithm = new AsciiArtAlgorithm(user);
     }
 
     public void run(){
@@ -20,7 +17,9 @@ public class Shell {
             System.out.println(">>>");
             response = KeyboardInput.readLine();
 
-            switch (response){
+            String [] args= response.split(" ");
+
+            switch (args[0]){
                 case "chars":
                     break;
                 case "res":
@@ -32,12 +31,16 @@ public class Shell {
                 case "asciiArt":
                     break;
                 case "add":
-                    break;
+                    add(args[1]);
                 case "remove":
                     break;
             }
 
         }
+    }
+
+    private void add(String arg){
+        user.getSubImgCharMatcher().addChar();
     }
 
 

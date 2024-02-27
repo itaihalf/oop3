@@ -5,6 +5,7 @@ import image.ImageProcessor;
 import image_char_matching.SubImgCharMatcher;
 
 import java.io.IOException;
+import java.util.*;
 
 public class User {
 
@@ -26,6 +27,24 @@ public class User {
         this(new Image(DEFAULT_IMAGE_PATH), DEFAULT_RESOLUTION, DEFAULT_ASCII_CHARS);
     }
 
+
+    public void addCharToDB(char c){
+        subImgCharMatcher.addChar(c);
+    }
+    public void removeCharFromDB(char c){
+        subImgCharMatcher.removeChar(c);
+    }
+    public void addCharsToDB(char [] c){
+        for (char c1 : c) {
+            addCharToDB(c1);
+        }
+    }
+
+    public ArrayList<Character>  getCharsFromDB(){
+        ArrayList<Character> chars = subImgCharMatcher.getChars();
+        Collections.sort(chars);
+        return chars;
+    }
 
     public Image getImage() {
         return image;
