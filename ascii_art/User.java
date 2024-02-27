@@ -1,10 +1,13 @@
 package ascii_art;
 
+import ascii_output.AsciiOutput;
+import ascii_output.ConsoleAsciiOutput;
 import image.DimensionException;
 import image.Image;
 import image.ImageProcessor;
 import image_char_matching.SubImgCharMatcher;
 
+import java.io.Console;
 import java.io.IOException;
 import java.util.*;
 
@@ -13,21 +16,26 @@ public class User {
     private Image image;
     private int resolution;
     private final SubImgCharMatcher subImgCharMatcher;
+    private AsciiOutput output;
 
     public static final String DEFAULT_IMAGE_PATH = "cat.jpeg";
     public static final int DEFAULT_RESOLUTION = 128;
     public static final char [] DEFAULT_ASCII_CHARS = {'1','2','3','4','5','6','7','8','9','0'};
 
-    public User(Image image, int resolution, char[] asciiChars) {
+    public User(Image image, int resolution, char[] asciiChars, AsciiOutput output) {
         this.image = ImageProcessor.fixSize(image);
         this.resolution = resolution;
         this.subImgCharMatcher = new SubImgCharMatcher(asciiChars);
+        this.output = output;
     }
 
     public User() throws IOException {
-        this(new Image(DEFAULT_IMAGE_PATH), DEFAULT_RESOLUTION, DEFAULT_ASCII_CHARS);
+        this(new Image(DEFAULT_IMAGE_PATH), DEFAULT_RESOLUTION, DEFAULT_ASCII_CHARS,new ConsoleAsciiOutput());
     }
 
+    public void setOutput(AsciiOutput output) {
+        this.output = output;
+    }
 
     public void addCharToDB(char c){
         subImgCharMatcher.addChar(c);
@@ -58,7 +66,7 @@ public class User {
     }
 
     public void setImage(String path) throws IOException {
-        this.image = new Image(path);
+        this.image = ImageProcessor.fixSize(new Image(path));
     }
 
     public int getResolution() {
@@ -66,7 +74,7 @@ public class User {
     }
 
     public void setResolution(int resolution) throws DimensionException {
-        if (resolution < Math.max(1,image.getWidth()/image.getHeight())){
+        if (resolution < Math.max(1,image.getWidth()/image.getHeight()) || resolution > image.getWidth()){
             throw new DimensionException();
         }
         this.resolution = resolution;
@@ -74,5 +82,10 @@ public class User {
 
     public SubImgCharMatcher getSubImgCharMatcher() {
         return subImgCharMatcher;
+    }
+
+
+    public AsciiOutput getOutput() {
+    return output;
     }
 }

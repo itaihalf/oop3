@@ -1,12 +1,12 @@
 package ascii_art;
 
+import ascii_output.ConsoleAsciiOutput;
+import ascii_output.HtmlAsciiOutput;
 import image.DimensionException;
 
 import java.io.IOException;
 
 public class Shell {
-
-
 
     private final User user;
     public Shell() throws IOException {
@@ -23,21 +23,62 @@ public class Shell {
 
             switch (args[0]){
                 case "chars":
+                    chars();
                     break;
                 case "res":
+                    if (args.length < 2){
+                        System.out.println("Did not change resolution due to incorrect format");
+                        break;
+                    }
+                    res(args[1]);
                     break;
                 case "image":
+                    if (args.length < 2){
+                        System.out.println("Did not execute due to problem with image file.");
                         break;
+                    }
+                    image(args[1]);
+                    break;
                 case "output":
+                    if (args.length < 2){
+                        System.out.println("Did not change output method due to incorrect format.");
+                        break;
+                    }
+                    output(args[1]);
                     break;
                 case "asciiArt":
+                    asciiArt();
                     break;
                 case "add":
+                    if (args.length < 2){
+                        System.out.println("Did not add due to incorrect format.");
+                        break;
+                    }
                     add(args[1]);
+                    break;
                 case "remove":
+                    if (args.length < 2){
+                        System.out.println("Did not add due to incorrect format.");
+                        break;
+                    }
                     remove(args[1]);
+                    break;
+                default:
+                    System.out.println("Did not execute due to incorrect command.");
             }
 
+        }
+    }
+
+
+
+    private void asciiArt()  {
+        AsciiArtAlgorithm algorithm = new AsciiArtAlgorithm(user);
+        try {
+            char [][] res  = algorithm.run();
+            user.getOutput().out(res);
+        } catch (DimensionException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -97,13 +138,46 @@ public class Shell {
                     break;
                 default:
                     System.out.println("Did not change resolution due to incorrect format.");
+                    return;
             }
         } catch (DimensionException e){
             System.out.println("Did not change resolution due to incorrect format.");
+            return;
         }
+        System.out.println(String.format("Resolution set to %d.", user.getResolution()));
+    }
 
+    private void chars(){
+        for(Character iter : user.getCharsFromDB()){
+            System.out.print(((char)iter)+" ");
+        }
+        System.out.println();
     }
 
 
+    private void output(String arg){
+        switch (arg){
+            case "html":
+                user.setOutput(new HtmlAsciiOutput("out.html", "Courier New"));
+                break;
+            case "console":
+                user.setOutput(new ConsoleAsciiOutput());
+                break;
+            default:
+                System.out.println("Did not change output method due to incorrect format.");
+        }
+    }
+
+    private void image(String arg){
+        try{
+            user.setImage(arg);
+        } catch (IOException exception) {
+            System.out.println("Did not execute due to problem with image file.");
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        new Shell().run();
+    }
 }
 
