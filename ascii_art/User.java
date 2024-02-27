@@ -1,5 +1,6 @@
 package ascii_art;
 
+import image.DimensionException;
 import image.Image;
 import image.ImageProcessor;
 import image_char_matching.SubImgCharMatcher;
@@ -40,6 +41,12 @@ public class User {
         }
     }
 
+    public void removeCharsFromDB(char [] c){
+        for (char c1 : c) {
+            removeCharFromDB(c1);
+        }
+    }
+
     public ArrayList<Character>  getCharsFromDB(){
         ArrayList<Character> chars = subImgCharMatcher.getChars();
         Collections.sort(chars);
@@ -50,19 +57,22 @@ public class User {
         return image;
     }
 
-    public void setImage(Image image) {
-        this.image = image;
+    public void setImage(String path) throws IOException {
+        this.image = new Image(path);
     }
 
     public int getResolution() {
         return resolution;
     }
 
-    public void setResolution(int resolution) {
+    public void setResolution(int resolution) throws DimensionException {
+        if (resolution < Math.max(1,image.getWidth()/image.getHeight())){
+            throw new DimensionException();
+        }
         this.resolution = resolution;
     }
 
-
-
-
+    public SubImgCharMatcher getSubImgCharMatcher() {
+        return subImgCharMatcher;
+    }
 }
