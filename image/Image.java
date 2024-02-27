@@ -12,9 +12,9 @@ import java.io.IOException;
  */
 public class Image {
 
-    private final Color[][] pixelArray;
-    private final int width;
-    private final int height;
+    protected final Color[][] pixelArray;
+    protected final int width;
+    protected final int height;
 
     public Image(String filename) throws IOException {
         BufferedImage im = ImageIO.read(new File(filename));

@@ -2,8 +2,7 @@ package image;
 
 import java.awt.*;
 
-public class imageProcessor {
-    public imageProcessor () {}
+public class ImageProcessor {
 
     public static Image fixSize(Image img){
         int heightNearesetPower = NearestPowerOfTwo(img.getHeight());
@@ -18,11 +17,11 @@ public class imageProcessor {
                 (tempHeight >= heightNearesetPower - numToAddHeight) || (tempWidth <= numToAddWidth) ||
                         (tempWidth >= widthNearesetPower - numToAddWidth);
                 if (whiteCondition) {
-                    fixed[tempHeight][tempWidth] = Color.white; //make sure not passing pointer but making copy
+                    fixed[tempHeight][tempWidth] = Color.white;
                 }
                 else {
                     fixed[tempHeight][tempWidth] =
-                            img.getPixel(tempHeight - numToAddHeight, tempWidth - numToAddWidth); //make sure not passing pointer but making copy
+                            img.getPixel(tempHeight - numToAddHeight, tempWidth - numToAddWidth);
                 }
             }
         }

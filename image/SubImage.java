@@ -4,22 +4,13 @@ import java.awt.*;
 
 public class SubImage extends Image{
 
-    public SubImage(Color[][] pixelArray, int width, int height) {
-        super(pixelArray, width, height);
-    }
-
-    public SubImage(String filename) throws Exception {
-        super(filename);
-    }
-
-    public static SubImage FromImage(Image image, int topLeftI, int topLeftJ, int resolution) {
-        Color[][] pixelArray = new Color[resolution][resolution];
+    public  SubImage (Image image, int topLeftI, int topLeftJ, int resolution) {
+        super(new Color[resolution][resolution], resolution, resolution);
         for (int i = 0; i < resolution; i++) {
             for (int j = 0; j < resolution; j++) {
                 pixelArray[i][j] = image.getPixel(topLeftI + i, topLeftJ + j);
             }
         }
-        return new SubImage(pixelArray, resolution, resolution);
     }
 
 
