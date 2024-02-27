@@ -32,6 +32,6 @@ public class ImageProcessor {
         if (num != 0) {
             num = 32 - Integer.numberOfLeadingZeros(num - 1);
         }
-        return num;
+        return (int) Math.pow(2, num);
     }
 }

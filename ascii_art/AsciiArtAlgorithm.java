@@ -1,10 +1,17 @@
 package ascii_art;
 
+import ascii_output.AsciiOutput;
+import ascii_output.ConsoleAsciiOutput;
+import ascii_output.HtmlAsciiOutput;
 import image.DimensionException;
 import image.Image;
+import image.ImageProcessor;
 import image.SubImageList;
 import image_char_matching.CharConverter;
 import image_char_matching.SubImgCharMatcher;
+
+import java.awt.*;
+import java.io.IOException;
 
 public class AsciiArtAlgorithm {
 
@@ -16,11 +23,9 @@ public class AsciiArtAlgorithm {
 
 
 
-    public AsciiArtAlgorithm(Image image, int resolution, char [] asciiChars) throws DimensionException {
-        if (image.getWidth() % resolution != 0 || image.getHeight() % resolution != 0) {
-            throw new DimensionException();
-        }
-        this.image = image;
+    public AsciiArtAlgorithm(Image image, int resolution, char [] asciiChars)  {
+
+        this.image = ImageProcessor.fixSize(image);
         this.resolution = resolution;
         this.asciiChars = asciiChars;
         this.subImgCharMatcher = new SubImgCharMatcher(asciiChars);
@@ -41,6 +46,17 @@ public class AsciiArtAlgorithm {
         }
         return res;
 
+    }
+
+    public static void main(String[] args) throws IOException, DimensionException {
+        Image cat = new Image("cat.jpeg");
+        char [] asciiChars = {'1','2','3','4'};
+
+        AsciiArtAlgorithm asciiArtAlgorithm = new AsciiArtAlgorithm(cat,128,asciiChars);
+        char [] [] res = asciiArtAlgorithm.run();
+
+        HtmlAsciiOutput htmlAsciiOutput = new HtmlAsciiOutput("cat.html","Courier New");
+        htmlAsciiOutput.out(res);
     }
 
 }
