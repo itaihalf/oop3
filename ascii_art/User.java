@@ -29,8 +29,24 @@ public class User {
         this.output = output;
     }
 
+    public User(User user){
+        this.image = user.image;
+        this.resolution = user.resolution;
+        this.subImgCharMatcher = user.subImgCharMatcher;
+        this.output = user.output;
+    }
+
     public User() throws IOException {
         this(new Image(DEFAULT_IMAGE_PATH), DEFAULT_RESOLUTION, DEFAULT_ASCII_CHARS,new ConsoleAsciiOutput());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof User){
+            User user = (User) obj;
+            return user.image.equals(image) && user.resolution == resolution;
+        }
+        return false;
     }
 
     public void setOutput(AsciiOutput output) {
@@ -69,6 +85,9 @@ public class User {
         this.image = ImageProcessor.fixSize(new Image(path));
     }
 
+    public void setImage(Image image) {
+        this.image = ImageProcessor.fixSize(image);
+    }
     public int getResolution() {
         return resolution;
     }
@@ -89,3 +108,4 @@ public class User {
     return output;
     }
 }
+

@@ -56,5 +56,4 @@ public class SubImgCharMatcher {
         return new ArrayList<>(brightnessMap.keySet());
     }
 
-
 }
