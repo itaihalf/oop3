@@ -13,8 +13,8 @@ public class ImageProcessor {
         boolean whiteCondition;
         for (int tempHeight = 0;tempHeight < heightNearesetPower;tempHeight++) {
             for (int tempWidth = 0;tempWidth < widthNearesetPower;tempWidth++) {
-                whiteCondition = (tempHeight <= numToAddHeight) ||
-                (tempHeight >= heightNearesetPower - numToAddHeight) || (tempWidth <= numToAddWidth) ||
+                whiteCondition = (tempHeight < numToAddHeight) ||
+                (tempHeight >= heightNearesetPower - numToAddHeight) || (tempWidth < numToAddWidth) ||
                         (tempWidth >= widthNearesetPower - numToAddWidth);
                 if (whiteCondition) {
                     fixed[tempHeight][tempWidth] = Color.white;
@@ -34,4 +34,7 @@ public class ImageProcessor {
         }
         return (int) Math.pow(2, num);
     }
+
+
+
 }

@@ -209,6 +209,8 @@ public class Shell {
 			user.getOutput().out(res);
 		} catch (DimensionException e) {
 			throw new RuntimeException(e);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
 	}
 

@@ -11,7 +11,7 @@ public class SubImageList extends ArrayList<SubImage> {
         if (image.getWidth() % resolution != 0 || image.getHeight() % resolution != 0) {
             throw new DimensionException();
         }
-        for (int i = 0; i < image.getHeight(); i += image.getWidth()/resolution) { //todo is resolution or image/resolution
+        for (int i = 0; i < image.getHeight(); i += image.getWidth()/resolution) {
             for (int j = 0; j < image.getWidth(); j += image.getWidth()/ resolution) {
                 add(new SubImage(image, i, j, image.getWidth()/resolution));
             }
