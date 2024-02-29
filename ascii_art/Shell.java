@@ -59,6 +59,7 @@ public class Shell {
 	private static final char CHAR_INDEX_START = '0';
 	private static final int LENGTH_TWO = 2;
 	private static final int CHAR_INDEX_END = 1;
+	private static final String EMPTY_RESPONSE = "";
 
 	private final AsciiArtAlgorithm algorithm;
 	private final User user;
@@ -77,7 +78,7 @@ public class Shell {
 	 * Runs the interactive shell for user interactions.
 	 */
 	public void run() {
-		String response = "";
+		String response = EMPTY_RESPONSE;
 		while (!response.equals(CMD_EXIT)) {
 			System.out.println(COMMAND_PROMPT);
 			response = KeyboardInput.readLine();

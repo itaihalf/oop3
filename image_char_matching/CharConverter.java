@@ -15,6 +15,9 @@ public class CharConverter {
     private static final double X_OFFSET_FACTOR = 0.2;
     private static final double Y_OFFSET_FACTOR = 0.75;
     private static final String FONT_NAME = "Courier New";
+    /**
+     * Default resolution (width and height) for the generated binary images.
+     */
     public static final int DEFAULT_PIXEL_RESOLUTION = 16;
 
     /**
@@ -33,6 +36,14 @@ public class CharConverter {
         return matrix;
     }
 
+    /**
+     * Generates a BufferedImage of a character with specified font and resolution.
+     *
+     * @param c             The character to render.
+     * @param fontName      The font name for rendering.
+     * @param pixelsPerRow  The resolution (width and height) of the generated image.
+     * @return              The BufferedImage of the rendered character.
+     */
     private static BufferedImage getBufferedImage(char c, String fontName, int pixelsPerRow) {
         String charStr = Character.toString(c);
         Font font = new Font(fontName, Font.PLAIN, pixelsPerRow);
