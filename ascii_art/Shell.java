@@ -60,6 +60,7 @@ public class Shell {
 	private static final int LENGTH_TWO = 2;
 	private static final int CHAR_INDEX_END = 1;
 	private static final String EMPTY_RESPONSE = "";
+	private static final String STRING_SPACE_SEP = " ";
 
 	private final AsciiArtAlgorithm algorithm;
 	private final User user;
@@ -158,7 +159,7 @@ public class Shell {
 	 */
 	private void chars() {
 		for (Character iter : user.getCharsFromDB()) {
-			System.out.print(((char) iter) + " ");
+			System.out.print(((char) iter) + STRING_SPACE_SEP);
 		}
 		System.out.println();
 	}
