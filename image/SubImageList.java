@@ -13,15 +13,10 @@ public class SubImageList extends ArrayList<SubImage> {
      *
      * @param image      The original image.
      * @param resolution The resolution (width and height) of each sub-image.
-     * @throws DimensionException If the image dimensions are not integral multiples of the resolution.
+     *
      */
-    public SubImageList(Image image, int resolution) throws DimensionException {
+    public SubImageList(Image image, int resolution){
         super();
-        // todo: check if image is an integral multiple of 2
-        if (image.getWidth() % resolution != 0 || image.getHeight() % resolution != 0) {
-            throw new DimensionException();
-        }
-
         for (int i = 0; i < image.getHeight(); i += image.getWidth() / resolution) {
             for (int j = 0; j < image.getWidth(); j += image.getWidth() / resolution) {
                 add(new SubImage(image, i, j, image.getWidth() / resolution));

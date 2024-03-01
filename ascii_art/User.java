@@ -2,9 +2,9 @@ package ascii_art;
 
 import ascii_output.AsciiOutput;
 import ascii_output.ConsoleAsciiOutput;
-import image.DimensionException;
 import image.Image;
 import image.ImageProcessor;
+import image.InvalidResolutionException;
 import image_char_matching.SubImgCharMatcher;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,6 +24,7 @@ public class User {
     // Default values
     public static final String DEFAULT_IMAGE_PATH = "cat.jpeg";
     public static final int DEFAULT_RESOLUTION = 128;
+    private static final int MIN_RES =1;
     public static final char[] DEFAULT_ASCII_CHARS = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0'};
 
     /**
@@ -156,14 +157,6 @@ public class User {
         this.image = ImageProcessor.fixSize(new Image(path));
     }
 
-    /**
-     * Sets the user's image.
-     *
-     * @param image The new image.
-     */
-    public void setImage(Image image) {
-        this.image = ImageProcessor.fixSize(image);
-    }
 
     /**
      * Gets the resolution for ASCII conversion.
@@ -178,11 +171,12 @@ public class User {
      * Sets the resolution for ASCII conversion.
      *
      * @param resolution The new resolution.
-     * @throws DimensionException If the new resolution is out of bounds.
+     * @throws InvalidResolutionException If the new resolution is out of bounds.
      */
-    public void setResolution(int resolution) throws DimensionException {
-        if (resolution < Math.max(1, image.getWidth() / image.getHeight()) || resolution > image.getWidth()) {
-            throw new DimensionException();
+    public void setResolution(int resolution) throws InvalidResolutionException {
+        if (resolution < Math.max(MIN_RES, image.getWidth() /
+                image.getHeight()) || resolution > image.getWidth()) {
+            throw new InvalidResolutionException();
         }
         this.resolution = resolution;
     }

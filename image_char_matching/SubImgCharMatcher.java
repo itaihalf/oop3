@@ -82,12 +82,16 @@ public class SubImgCharMatcher {
 
 	/**
 	 * Removes a character from the matcher and updates the associated brightness values.
+	 * if there is no brightness with char c, it does not do anything.
 	 *
 	 * @param c The character to be removed.
 	 */
 	public void removeChar(char c) {
-		double brightness = brightnessMap.get(c);
 
+		Double brightness = brightnessMap.get(c);
+		if (brightness == null) {
+			return;
+		}
 		// Update the sorted map
 		brightnessSortedMap.get(brightness).remove(c);
 		if (brightnessSortedMap.get(brightness).isEmpty()) {

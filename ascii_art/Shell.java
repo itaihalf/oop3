@@ -2,7 +2,7 @@ package ascii_art;
 
 import ascii_output.ConsoleAsciiOutput;
 import ascii_output.HtmlAsciiOutput;
-import image.DimensionException;
+import image.InvalidResolutionException;
 
 import java.io.IOException;
 
@@ -13,7 +13,7 @@ import java.io.IOException;
  */
 public class Shell {
 
-	private static final String COMMAND_PROMPT = ">>>";
+	private static final String COMMAND_PROMPT = ">>> ";
 	private static final String CMD_CHARS = "chars";
 	private static final String CMD_RES = "res";
 	private static final String CMD_IMAGE = "image";
@@ -25,11 +25,10 @@ public class Shell {
 	private static final String MSG_RESOLUTION_CHANGE = "Resolution set to %d.";
 	private static final String MSG_NOT_CHANGE_RESOLUTION_FORMAT = "Did not change resolution due" +
 			" to incorrect format.";
-	private static final String MSG_NOT_EXECUTE_IMAGE = "Did not execute due to a problem with" +
-			" the image file.";
+	private static final String MSG_NOT_EXECUTE_IMAGE = "Did not execute due to problem with" +
+			" image file."; //todo wrong
 	private static final String MSG_NOT_CHANGE_OUTPUT_METHOD = "Did not change output method due" +
 			" to incorrect format.";
-	private static final String MSG_NOT_ADD = "Did not add due to incorrect format.";
 	private static final String MSG_INCORRECT_COMMAND = "Did not execute due to incorrect command.";
 	private static final String OUTPUT_HTML_FILE = "out.html";
 	private static final String OUTPUT_HTML_FONT = "Courier New";
@@ -46,7 +45,7 @@ public class Shell {
 	private static final char CHAR_SPACE_SEP = ' ';
 	private static final char CHAR_DASH_SEP = '-';
 	private static final char CHAR_TILDE_SEP = '~';
-	private static final int MINIMUM_LEN_FRO_COMMAND = 2;
+	private static final int ARG_LEN_FOR_COMMANDS_TYPE_2 = 2;
 
 	private static final int DEFAULT_RESOLUTION = 128;
 	private static final char[] DEFAULT_ASCII_CHARS = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0'};
@@ -61,6 +60,10 @@ public class Shell {
 	private static final int CHAR_INDEX_END = 1;
 	private static final String EMPTY_RESPONSE = "";
 	private static final String STRING_SPACE_SEP = " ";
+	private static final String CHARSET_EMPTY_MSG = "Did not execute. Charset is empty.";
+	private static final String MSG_NOT_CHANGE_RESOLUTION_BOUNDARIES = 
+			"Did not change resolution due to exceeding boundaries.";
+	private static final String MSG_NOT_REMOVE = "Did not remove due to incorrect format.";
 
 	private final AsciiArtAlgorithm algorithm;
 	private final User user;
@@ -68,10 +71,13 @@ public class Shell {
 	/**
 	 * Constructs a Shell object and initializes it with the default user and ASCII art algorithm.
 	 *
-	 * @throws IOException If an error occurs while initializing the default user.
 	 */
-	public Shell() throws IOException {
-		user = new User();
+	public Shell() {
+		try {
+			user = new User();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 		algorithm = new AsciiArtAlgorithm(user);
 	}
 
@@ -81,68 +87,56 @@ public class Shell {
 	public void run() {
 		String response = EMPTY_RESPONSE;
 		while (!response.equals(CMD_EXIT)) {
-			System.out.println(COMMAND_PROMPT);
+			System.out.print(COMMAND_PROMPT);
 			response = KeyboardInput.readLine();
 
 			String[] args = response.split(STR_SPACE_SEP);
-
-			switch (args[FIRST_COMMAND_ARG]) {
-				case CMD_CHARS:
-					chars();
-					break;
-				case CMD_RES:
-					if (args.length < MINIMUM_LEN_FRO_COMMAND) {
-						System.out.println(MSG_NOT_CHANGE_RESOLUTION_FORMAT);
+			try{
+				switch (args[FIRST_COMMAND_ARG]) {
+					case CMD_CHARS:
+						chars();
 						break;
-					}
-					res(args[SECOND_COMMAND_ARG]);
-					break;
-				case CMD_IMAGE:
-					if (args.length < MINIMUM_LEN_FRO_COMMAND) {
-						System.out.println(MSG_NOT_EXECUTE_IMAGE);
+					case CMD_RES:
+						res(args);
 						break;
-					}
-					image(args[SECOND_COMMAND_ARG]);
-					break;
-				case CMD_OUTPUT:
-					if (args.length < MINIMUM_LEN_FRO_COMMAND) {
-						System.out.println(MSG_NOT_CHANGE_OUTPUT_METHOD);
+					case CMD_IMAGE:
+						image(args);
 						break;
-					}
-					output(args[SECOND_COMMAND_ARG]);
-					break;
-				case CMD_ASCII_ART:
-					asciiArt();
-					break;
-				case CMD_ADD:
-					if (args.length < MINIMUM_LEN_FRO_COMMAND) {
-						System.out.println(MSG_NOT_ADD);
+					case CMD_OUTPUT:
+						output(args);
 						break;
-					}
-					add(args[SECOND_COMMAND_ARG]);
-					break;
-				case CMD_REMOVE:
-					if (args.length < MINIMUM_LEN_FRO_COMMAND) {
-						System.out.println(MSG_NOT_ADD);
+					case CMD_ASCII_ART:
+						asciiArt();
 						break;
-					}
-					remove(args[SECOND_COMMAND_ARG]);
-					break;
-				case CMD_EXIT:
-					break;
-				default:
-					System.out.println(MSG_INCORRECT_COMMAND);
+					case CMD_ADD:
+						add(args);
+						break;
+					case CMD_REMOVE:
+						remove(args);
+						break;
+					case CMD_EXIT:
+						break;
+					default:
+						System.out.println(MSG_INCORRECT_COMMAND);
+				}
+			}catch (ParamsException e){
+				System.out.println(e.getMessage());
 			}
+
 		}
 	}
 
 	/**
 	 * Changes the output method for displaying ASCII art.
 	 *
-	 * @param arg The argument specifying the output method.
+	 * @param args The argument specifying the output method.
 	 */
-	private void output(String arg) {
-		switch (arg) {
+	private void output(String[] args) throws InvalidArgFormat {
+
+		if (args.length != ARG_LEN_FOR_COMMANDS_TYPE_2){
+			throw new InvalidArgFormat(MSG_NOT_CHANGE_OUTPUT_METHOD);
+		}
+		switch (args[SECOND_COMMAND_ARG]) {
 			case OUTPUT_HTML:
 				user.setOutput(new HtmlAsciiOutput(OUTPUT_HTML_FILE, OUTPUT_HTML_FONT));
 				break;
@@ -167,11 +161,14 @@ public class Shell {
 	/**
 	 * Changes the resolution for ASCII conversion.
 	 *
-	 * @param arg The argument specifying the resolution change.
+	 * @param args The arguments specifying the resolution change.
 	 */
-	private void res(String arg) {
+	private void res(String[] args) throws InvalidArgFormat {
+		if (args.length != ARG_LEN_FOR_COMMANDS_TYPE_2){
+			throw new InvalidArgFormat(MSG_NOT_CHANGE_RESOLUTION_FORMAT);
+		}
 		try {
-			switch (arg) {
+			switch (args[SECOND_COMMAND_ARG]) {
 				case RESOLUTION_DOWN:
 					user.setResolution(user.getResolution() / RESOLUTION_MULTIPLIER_DOWN);
 					break;
@@ -182,9 +179,8 @@ public class Shell {
 					System.out.println(MSG_NOT_CHANGE_RESOLUTION_FORMAT);
 					return;
 			}
-		} catch (DimensionException e) {
-			System.out.println(MSG_NOT_CHANGE_RESOLUTION_FORMAT);
-			return;
+		} catch (InvalidResolutionException e) {
+			throw new InvalidArgFormat(MSG_NOT_CHANGE_RESOLUTION_BOUNDARIES);
 		}
 		System.out.println(String.format(MSG_RESOLUTION_CHANGE, user.getResolution()));
 	}
@@ -192,11 +188,14 @@ public class Shell {
 	/**
 	 * Changes the user's image using the provided path.
 	 *
-	 * @param arg The argument specifying the image path.
+	 * @param args The arguments specifying the image path.
 	 */
-	private void image(String arg) {
+	private void image(String[] args) throws InvalidArgFormat {
+		if (args.length != ARG_LEN_FOR_COMMANDS_TYPE_2){
+			throw new InvalidArgFormat(MSG_NOT_EXECUTE_IMAGE);
+		}
 		try {
-			user.setImage(arg);
+			user.setImage(args[SECOND_COMMAND_ARG]);
 		} catch (IOException exception) {
 			System.out.println(MSG_NOT_EXECUTE_IMAGE);
 		}
@@ -205,44 +204,55 @@ public class Shell {
 	/**
 	 * Runs the ASCII art algorithm and displays the result.
 	 */
-	private void asciiArt() {
-		try {
+	private void asciiArt() throws EmptyCharsException {
+		if (user.getCharsFromDB().isEmpty()){
+			throw new EmptyCharsException(CHARSET_EMPTY_MSG);
+		}
 			char[][] res = algorithm.run();
 			user.getOutput().out(res);
-		} catch (DimensionException e) {
-			throw new RuntimeException(e);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	/**
 	 * Adds characters to the ASCII character database.
 	 *
-	 * @param arg The argument specifying characters to add.
+	 * @param args The argument specifying characters to add.
 	 */
-	private void add(String arg) {
+	private void add(String [] args) throws InvalidArgFormat {
+
+		if (args.length != ARG_LEN_FOR_COMMANDS_TYPE_2){
+			throw new InvalidArgFormat(MSG_NOT_ADD_FORMAT);
+
+		}
+		String arg = args[SECOND_COMMAND_ARG];
 		if (arg.length() == LENGTH_ONE) {
-			user.addCharToDB(arg.charAt(0));
+			user.addCharToDB(arg.charAt(FIRST_COMMAND_ARG));
 		} else if (arg.equals(ADD_ALL)) {
 			user.addCharsToDB(charsFromRange(CHAR_SPACE_SEP, CHAR_TILDE_SEP));
-		} else if (arg.split(String.valueOf(CHAR_DASH_SEP)).length == LENGTH_ONE) {
-			char start = arg.split(String.valueOf(CHAR_DASH_SEP))[0].charAt(0);
-			char end = arg.split(String.valueOf(CHAR_DASH_SEP))[1].charAt(0);
+		} else if (arg.split(String.valueOf(CHAR_DASH_SEP)).length == LENGTH_TWO) {
+			char start = arg.split(String.valueOf(CHAR_DASH_SEP))[FIRST_COMMAND_ARG]
+					.charAt(FIRST_COMMAND_ARG);
+
+			char end = arg.split(String.valueOf(CHAR_DASH_SEP))[SECOND_COMMAND_ARG]
+					.charAt(FIRST_COMMAND_ARG);
 			user.addCharsToDB(charsFromRange(start, end));
 		} else {
-			System.out.println(MSG_NOT_ADD_FORMAT);
+			throw new InvalidArgFormat(MSG_NOT_ADD_FORMAT);
 		}
 	}
 
 	/**
 	 * Removes characters from the ASCII character database.
 	 *
-	 * @param arg The argument specifying characters to remove.
+	 * @param args The argument specifying characters to remove.
 	 */
-	private void remove(String arg) {
+	private void remove(String[] args) throws InvalidArgFormat {
+
+		if (args.length != ARG_LEN_FOR_COMMANDS_TYPE_2){
+			throw new InvalidArgFormat(MSG_NOT_REMOVE);
+		}
+		String arg = args[SECOND_COMMAND_ARG];
 		if (arg.length() == LENGTH_ONE) {
-			user.removeCharFromDB(arg.charAt(CHAR_INDEX_START));
+			user.removeCharFromDB(arg.charAt(FIRST_COMMAND_ARG));
 		} else if (arg.equals(REMOVE_ALL)) {
 			user.removeCharsFromDB(charsFromRange(FIRST_CHAR_ASCII, LAST_CHAR_ASCII));
 		} else if (arg.split(STR_DASH_SEP).length == LENGTH_TWO) {
@@ -250,7 +260,7 @@ public class Shell {
 			char end = arg.split(STR_DASH_SEP)[CHAR_INDEX_END].charAt(CHAR_INDEX_START);
 			user.removeCharsFromDB(charsFromRange(start, end));
 		} else {
-			System.out.println(MSG_NOT_ADD_FORMAT);
+			throw new InvalidArgFormat(MSG_NOT_REMOVE);
 		}
 	}
 
@@ -267,7 +277,7 @@ public class Shell {
 			start = end;
 			end = temp;
 		}
-		char[] res = new char[end - start + 1];
+		char[] res = new char[end - start + SECOND_COMMAND_ARG];
 		for (int i = 0; i < res.length; i++) {
 			res[i] = (char) (start + i);
 		}
@@ -278,9 +288,9 @@ public class Shell {
 	 * The main method to start the ASCII Art application.
 	 *
 	 * @param args Command-line arguments.
-	 * @throws IOException If an error occurs while initializing the Shell.
+	 *
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) {
 		new Shell().run();
 	}
 }

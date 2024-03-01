@@ -1,6 +1,4 @@
 package ascii_art;
-
-import image.DimensionException;
 import image.Image;
 import image.SubImageList;
 
@@ -29,9 +27,9 @@ public class AsciiArtAlgorithm {
 	 * Runs the ASCII art algorithm to convert the user's image into a matrix of ASCII characters.
 	 *
 	 * @return A 2D char array representing the ASCII art.
-	 * @throws DimensionException If an error occurs while processing image dimensions.
+	 *
 	 */
-	public char[][] run() throws DimensionException, IOException {
+	public char[][] run() {
 		int resolution = user.getResolution();
 		Image image = user.getImage();
 		char[][] res = new char[resolution][resolution];
