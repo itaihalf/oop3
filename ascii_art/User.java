@@ -4,7 +4,6 @@ import ascii_output.AsciiOutput;
 import ascii_output.ConsoleAsciiOutput;
 import image.Image;
 import image.ImageProcessor;
-import image.InvalidResolutionException;
 import image_char_matching.SubImgCharMatcher;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -71,8 +70,7 @@ public class User {
      */
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof User) {
-            User user = (User) obj;
+        if (obj instanceof User user) {
             return user.image.equals(image) && user.resolution == resolution;
         }
         return false;
@@ -176,7 +174,7 @@ public class User {
     public void setResolution(int resolution) throws InvalidResolutionException {
         if (resolution < Math.max(MIN_RES, image.getWidth() /
                 image.getHeight()) || resolution > image.getWidth()) {
-            throw new InvalidResolutionException();
+            throw new InvalidResolutionException("");
         }
         this.resolution = resolution;
     }

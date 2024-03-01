@@ -2,7 +2,6 @@ package ascii_art;
 
 import ascii_output.ConsoleAsciiOutput;
 import ascii_output.HtmlAsciiOutput;
-import image.InvalidResolutionException;
 
 import java.io.IOException;
 
@@ -47,8 +46,6 @@ public class Shell {
 	private static final char CHAR_TILDE_SEP = '~';
 	private static final int ARG_LEN_FOR_COMMANDS_TYPE_2 = 2;
 
-	private static final int DEFAULT_RESOLUTION = 128;
-	private static final char[] DEFAULT_ASCII_CHARS = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0'};
 	private static final String STR_DASH_SEP = "-";
 	private static final char FIRST_CHAR_ASCII = ' ';
 	private static final char LAST_CHAR_ASCII = '~';
@@ -131,10 +128,10 @@ public class Shell {
 	 *
 	 * @param args The argument specifying the output method.
 	 */
-	private void output(String[] args) throws InvalidArgFormat {
+	private void output(String[] args) throws InvalidArgFormatException {
 
 		if (args.length != ARG_LEN_FOR_COMMANDS_TYPE_2){
-			throw new InvalidArgFormat(MSG_NOT_CHANGE_OUTPUT_METHOD);
+			throw new InvalidArgFormatException(MSG_NOT_CHANGE_OUTPUT_METHOD);
 		}
 		switch (args[SECOND_COMMAND_ARG]) {
 			case OUTPUT_HTML:
@@ -163,9 +160,9 @@ public class Shell {
 	 *
 	 * @param args The arguments specifying the resolution change.
 	 */
-	private void res(String[] args) throws InvalidArgFormat {
+	private void res(String[] args) throws InvalidArgFormatException {
 		if (args.length != ARG_LEN_FOR_COMMANDS_TYPE_2){
-			throw new InvalidArgFormat(MSG_NOT_CHANGE_RESOLUTION_FORMAT);
+			throw new InvalidArgFormatException(MSG_NOT_CHANGE_RESOLUTION_FORMAT);
 		}
 		try {
 			switch (args[SECOND_COMMAND_ARG]) {
@@ -180,7 +177,7 @@ public class Shell {
 					return;
 			}
 		} catch (InvalidResolutionException e) {
-			throw new InvalidArgFormat(MSG_NOT_CHANGE_RESOLUTION_BOUNDARIES);
+			throw new InvalidArgFormatException(MSG_NOT_CHANGE_RESOLUTION_BOUNDARIES);
 		}
 		System.out.println(String.format(MSG_RESOLUTION_CHANGE, user.getResolution()));
 	}
@@ -190,9 +187,9 @@ public class Shell {
 	 *
 	 * @param args The arguments specifying the image path.
 	 */
-	private void image(String[] args) throws InvalidArgFormat {
+	private void image(String[] args) throws InvalidArgFormatException {
 		if (args.length != ARG_LEN_FOR_COMMANDS_TYPE_2){
-			throw new InvalidArgFormat(MSG_NOT_EXECUTE_IMAGE);
+			throw new InvalidArgFormatException(MSG_NOT_EXECUTE_IMAGE);
 		}
 		try {
 			user.setImage(args[SECOND_COMMAND_ARG]);
@@ -217,10 +214,10 @@ public class Shell {
 	 *
 	 * @param args The argument specifying characters to add.
 	 */
-	private void add(String [] args) throws InvalidArgFormat {
+	private void add(String [] args) throws InvalidArgFormatException {
 
 		if (args.length != ARG_LEN_FOR_COMMANDS_TYPE_2){
-			throw new InvalidArgFormat(MSG_NOT_ADD_FORMAT);
+			throw new InvalidArgFormatException(MSG_NOT_ADD_FORMAT);
 
 		}
 		String arg = args[SECOND_COMMAND_ARG];
@@ -236,7 +233,7 @@ public class Shell {
 					.charAt(FIRST_COMMAND_ARG);
 			user.addCharsToDB(charsFromRange(start, end));
 		} else {
-			throw new InvalidArgFormat(MSG_NOT_ADD_FORMAT);
+			throw new InvalidArgFormatException(MSG_NOT_ADD_FORMAT);
 		}
 	}
 
@@ -245,10 +242,10 @@ public class Shell {
 	 *
 	 * @param args The argument specifying characters to remove.
 	 */
-	private void remove(String[] args) throws InvalidArgFormat {
+	private void remove(String[] args) throws InvalidArgFormatException {
 
 		if (args.length != ARG_LEN_FOR_COMMANDS_TYPE_2){
-			throw new InvalidArgFormat(MSG_NOT_REMOVE);
+			throw new InvalidArgFormatException(MSG_NOT_REMOVE);
 		}
 		String arg = args[SECOND_COMMAND_ARG];
 		if (arg.length() == LENGTH_ONE) {
@@ -260,7 +257,7 @@ public class Shell {
 			char end = arg.split(STR_DASH_SEP)[CHAR_INDEX_END].charAt(CHAR_INDEX_START);
 			user.removeCharsFromDB(charsFromRange(start, end));
 		} else {
-			throw new InvalidArgFormat(MSG_NOT_REMOVE);
+			throw new InvalidArgFormatException(MSG_NOT_REMOVE);
 		}
 	}
 
