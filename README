@@ -1,4 +1,84 @@
 danif64, itai_32
 208738922, 319023073
 
-1.
+1. UML explanation:
+
+    a. Ascii_art pack -
+        i. Shell: Serves as the main driver class for the application. It reads user input, executes commands based
+           on the input, and manages the high-level flow of the program. It interacts with User and
+           AsciiArtAlgorithm in order to handle user interactions and generate ASCII art from an image.
+        ii. AsciiArtAlgorithm: Contains the algorithm for converting images to ASCII art. It gets the brightness matrix
+            It calculates averages of sub-images and maps them to ASCII characters based on brightness.
+        iii. User: The User class represents a user in the ASCII Art application. It manages the user's image,
+             resolution, ASCII character database, and output preferences. This is a major pivot class in
+             our UML diagram, as it is the class that interacts with the AsciiArtAlgorithm, Shell,
+             SubImgCharMatcher and Image. The interactions are correlated with converting the image to ASCII art,
+             operating user commands, retrieving the correct Character based on sub image brightness and
+             to get properties of the image, respectively.
+        iv. KeyboardInput: supplied singleton class that handles the user input from the keyboard, used by the Shell
+            class.
+        v. ParamException: parent class of all the exceptions that are in charge of checking the parameters.
+            We created this exception hierarchy in order to be able to catch all the exceptions that are in charge
+            of checking the parameters with one catch block. The following exceptions extend the params exception:
+            i. emptychars exception - in charge of checking if the user entered an empty string of characters.
+               interacts with keyboardInput because it is the relevant class to throw exception of empty characters.
+            ii. invalidargformat exception - in charge of checking if the user entered an invalid argument format.
+                interacts with Shell because it is the relevant class to throw exception of invalid argument format.
+            iii. invalidresolution exception - in charge of checking if the user entered an invalid resolution.
+            more details in the exceptions section.
+    b. image package -
+        i. Image: Represents an image loaded from a file or defined by a pixel matrix. Interacts with SubImage.
+        ii. ImageProcessor: This class is a library that provides functionalities like splitting and padding images
+            into a matrix of sub-images and calculating normalized brightness.
+        iii. SubImage: Represents a sub-image of an image. It interacts with ImageList and extends Image.
+        iv. ImageList: Represents a list of sub-images. It interacts with SubImage and Image.
+    c. subimgcharmatcher package -
+       i. SubImgCharMatcher: Maps characters to their brightness values and allows retrieval based on image brightness.
+          It uses a data structure (TreeMap<Double, TreeSet<Character>>) to organize characters by their normalized brightness levels. It uses a
+              data structure (HashMap<Character, Double) to access characters' brightness by the character.
+         ii. CharConverter: Converts the brightness level to the character using SubImgCharMatcher.
+
+2. Explaining chosen data structures:
+    a. brightnessMap with HashMap - we chose to use a HashMap to store the brightness of each sub-image.
+    This is because the HashMap has an amortized time complexity of O(1) for both insertion and retrieval
+    of elements, which is the most common operation we will be performing on the brightnessMap. This is
+    because we will be searching for the brightness of the sub-image, and we will be inserting the
+    brightness of the sub-image. Thus, by using a HashMap, we can easily find the brightness of the
+    sub-image and insert it into the map. In terms of space complexity, the HashMap has an average space
+    complexity of O(n) for n elements, which is the number of sub-images we will be storing in the
+    brightnessMap. It is impossible to have a better space complexity than O(n) for n elements.
+    b. brightnessSortedMap with TreeMap - we chose to use a TreeMap<Double, Sortedset<Character>
+    to store the brightness of each character given by the user. This is because the TreeMap has a
+    time complexity of O(log n) for both insertion and retrieval of elements, which is the most common
+    operation we will be performing on the brightnessSortedMap. Notice that we map between the brightness
+    of the character and the set of characters that have the same brightness. This is because we want to
+    find from all the characters that have the same brightness the one who has the smallest ascii value.
+    Thus, we keep the characters in a sorted set. We decided to keep the whole set of characters and
+    not only to keep the character with the smallest ascii value, because in case the user removes this
+    character, we would like to update the smallest ascii value character accordingly, so we need to
+    keep all the characters with the same brightness. We chose to use a sorted set (and not for example
+    a sorted list) because we only wanted to have one appearance of each character.
+
+3. Dealing with exseptions:
+
+    a. params exception - in charge of checking the parameters. This is the parent class of all the
+    exceptions that are in charge of checking the parameters. We created this exception hierarchy
+    in order to be able to catch all the exceptions that are in charge of checking the parameters
+    with one catch block. The following exceptions extend the params exception:
+        i. emptychars exception - in charge of checking if the user entered an empty string of characters.
+        ii. invalidargformat exception - in charge of checking if the user entered an invalid argument format.
+        iii. invalidresolution exception - in charge of checking if the user entered an invalid resolution.
+    Notice these exceptions are checked exceptions, which may be caused by the user and should be
+    dealt with during the run of the program. We used a exception hierarchy, so we can catch the
+    exception in the run function for all different exceptions.
+
+4. we added the following methods to the SubImgCharMatcher API:
+    a. public ArrayList<Character> getChars() - this method is used to get the characters of the
+    SubImgCharMatcher. We added this method in order to allow User class to get the characters of the
+    SubImgCharMatcher.
+
+    Due to our creation of User class, all changes were needed in order to allow the user to
+    set the brightnessMap and the brightnessSortedMap of the SubImgCharMatcher, and to allow
+    the user to get the brightnessMap and the brightnessSortedMap of the SubImgCharMatcher.
+
+5. Other changes we made in the given classes:
